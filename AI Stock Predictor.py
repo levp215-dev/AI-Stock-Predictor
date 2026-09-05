@@ -4,9 +4,10 @@ import pandas as pd
 import numpy as np
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.model_selection import train_test_split
+from datetime import date
 
 # Download historical data
-data = yf.download("AAPL", start="2018-01-01", end="2026-01-01")
+data = yf.download("AAPL", start="2018-01-01", end=date.today().strftime("%Y-%m-%d"))
 
 # Flatten MultiIndex columns (yfinance can return MultiIndex for some setups)
 if isinstance(data.columns, pd.MultiIndex):
