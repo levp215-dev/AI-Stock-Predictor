@@ -65,4 +65,8 @@ model.fit(X_train, y_train)
 score = model.score(X_test, y_test)
 print("R^2 on test set:", score)
 
+# Predict next day's close
+last_row = data.iloc[-1][['SMA_10', 'SMA_50', 'RSI', volume_col]].values.reshape(1, -1)
+next_day_prediction = model.predict(last_row)
+print("Predicted next day's close:", next_day_prediction[0])
 
