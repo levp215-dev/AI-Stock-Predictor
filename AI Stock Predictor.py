@@ -48,15 +48,22 @@ data['RSI'] = 100 - (100 / (1 + rs))
 # Target: next-day close
 data['Target'] = close.shift(-1)
 
-# Drop rows with NaNs introduced by indicators or target
-data = data.dropna()
+# Keep the latest complete features even when the next-day target is unknown.
+feature_columns = ['SMA_10', 'SMA_50', 'RSI', volume_col]
+feature_data = data.dropna(subset=feature_columns)
+if feature_data.empty:
+   raise RuntimeError("Not enough stock data to compute the indicators.")
+last_row = feature_data[feature_columns].tail(1)
+
+# Only training and evaluation require a known next-day close.
+data = feature_data.dropna(subset=['Target'])
 
 # Features and target
-X = data[['SMA_10', 'SMA_50', 'RSI', volume_col]]
+X = data[feature_columns]
 y = data['Target']
 
-# Train/test split
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Train on earlier dates and evaluate on later dates.
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, shuffle=False)
 
 # Train model
 model = RandomForestRegressor(n_estimators=100, random_state=42)
@@ -66,8 +73,9 @@ model.fit(X_train, y_train)
 score = model.score(X_test, y_test)
 print("R^2 on test set:", score)
 
-# Predict next day's close
-last_row = data.iloc[-1][['SMA_10', 'SMA_50', 'RSI', volume_col]].values.reshape(1, -1)
+# Refit on all labeled history after evaluation for the final forecast.
+model.fit(X, y)
 next_day_prediction = model.predict(last_row)
-print("Predicted next day's close:", next_day_prediction[0])
+print(f"Forecast based on data through {last_row.index[-1].date()}")
+print(f"Predicted following trading day's close: ${next_day_prediction[0]:.2f}")
 
