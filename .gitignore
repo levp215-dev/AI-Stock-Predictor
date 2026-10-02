@@ -361,3 +361,52 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Python environment and dependency folders
+.venv/
+venv/
+env/
+ENV/
+*.venv/
+
+# Python package/build artifacts
+build/
+dist/
+*.egg-info/
+.eggs/
+pip-wheel-metadata/
+wheelhouse/
+
+# Local project libraries and caches
+site-packages/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+coverage/
+htmlcov/
+
+# Jupyter / local notebooks
+.ipynb_checkpoints/
+
+# Machine learning artifacts and saved models
+*.pkl
+*.joblib
+*.h5
+*.hdf5
+*.keras
+*.pt
+*.pth
+*.onnx
+*.bin
+*.sav
+*.model
+*.weights
+models/
+checkpoints/
+artifacts/
+saved_models/
+mlruns/
+
+# Operating system files
+.DS_Store
+Thumbs.db
